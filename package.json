@@ -6,9 +6,10 @@
     "node": "6.9.1"
   },
   "scripts": {
-    "start": "node hello.js"
+    "start": "node hello.js 80"
   },
   "dependencies": {
+    "express": "^4.15.3",
     "gun": "^0.7.9"
   }
 }
