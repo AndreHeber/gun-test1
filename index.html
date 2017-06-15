@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Hello World - GUN</title>
+
+        <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+        </style>
+
+    </head>
+    <body>
+        <h3>My Google Maps Demo</h3>
+
+        <div id="map"></div>
+        
+        <!-- Loads the GUN library -->
+        <script src="https://cdn.rawgit.com/amark/gun/master/gun.js"></script>
+
+        <script>
+
+        var map;
+        var marker;
+
+        var peers = [
+            'http://localhost:8080/gun'
+        ];
+        var gun = Gun(peers);
+
+        // Create an interface for the 'greetings' key
+        // store it an a variable.
+        var dbMarkers = gun.get('markers');
+
+        function initMap() {
+            var home = {lat: 49.414191, lng: 11.017973};
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 14,
+                center: home
+            });
+            marker = new google.maps.Marker({
+                position: home,
+                map: map,
+                draggable: true
+            });
+            marker.addListener('drag', function(event) {
+                dbMarkers.put({ lat: event.latLng.lat(), lng:  event.latLng.lng() });
+            });
+
+            // Read the value and listen for any changes
+            dbMarkers.on(function (data) {
+                var newPosition = new google.maps.LatLng({lat: data.lat, lng: data.lng}); 
+                marker.setPosition(newPosition);
+            });
+        }
+        </script>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCM7_tydos5FWSgq3ZqRkMLirggvB91DrI&callback=initMap">
+        </script>
+    </body>
+</html>
